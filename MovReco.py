@@ -124,8 +124,8 @@ if submitted:
             else:
                 overlap_users[ratings['userId'][i]] += 1
     
-    #Choose only 10% of most similar users to us
-    filtered_overlap_users = set([k for k in overlap_users if overlap_users[k] > len(movie_set)*0.1])
+    #Choose only 5% of most similar users to us
+    filtered_overlap_users = set([k for k in overlap_users if overlap_users[k] > len(movie_set)*0.05])
     
     #Get the movie id and ratings from the overlap users
     interactions = ratings[(ratings["userId"].isin(filtered_overlap_users))][["userId", "movieId", "rating"]]
@@ -160,8 +160,10 @@ if submitted:
     else:
         number = len(similarity)
     
-    #5 users that are most similar to us
-    indices = np.argpartition(similarity, -5)[5:]
+    #N users that are most similar to us
+    round_num = round(number/2)
+    #round_num = 5
+    indices = np.argpartition(similarity, -round_num)[round_num:]
     
     similar_users = interactions[interactions['user_index'].isin(indices)].copy()
     similar_users = similar_users[similar_users['userId'] != '-1']
